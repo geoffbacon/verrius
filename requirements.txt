@@ -1,0 +1,14 @@
+pipreqs
+pylint
+pycodestyle
+pydocstyle
+black
+isort
+blackcellmagic
+jupyter
+pyconll
+segments
+pandas
+matplotlib
+seaborn
+allennlp
