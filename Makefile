@@ -18,6 +18,7 @@ clean:
 	@find . -name '*.pyo' -exec rm -f {} +
 	@find . -name '*~' -exec rm -f {} +
 	@find . -name '__pycache__' -exec rm -rf {} +
+	@find . -name '.ipynb_checkpoints' -exec rm -rf {} +
 
 # check style
 lint: format
