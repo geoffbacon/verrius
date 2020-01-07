@@ -33,6 +33,11 @@ format:
 
 # Data-related targets
 
+# preprocess data
+preprocess:
+	jupyter nbconvert --ExecutePreprocessor.timeout=-1 --execute src/EDAP.ipynb && \
+	rm src/EDAP.html &
+
 # delete all trained models
 refresh:
 	@rm -rf models/
@@ -40,4 +45,4 @@ refresh:
 	@mkdir models/pos
 	@touch models/pos/.gitkeep
 
-.PHONY: requirements install clean lint format refresh
+.PHONY: requirements install clean lint format preprocess refresh

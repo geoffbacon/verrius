@@ -8,7 +8,7 @@ import _jsonnet
 from filenames import CONFIG_FILENAME
 
 TRAIN_CMD = "allennlp train -s {directory} -f {config}"
-K = 5
+K = int(sorted(os.listdir("data/evalatin/processed/pos"))[-1].split("-")[0])
 
 
 def train():
@@ -21,7 +21,7 @@ def train():
         # The -o override flag in allennlp train was finicky so I used a temporary file hack
         with open("tmp.jsonnet", "w") as file:
             json.dump(c, file, indent=2)
-        cmd = TRAIN_CMD.format(config="tmp.jsonnet", directory=serialization_directory)
+        cmd = TRAIN_CMD.format(config="tmp.jsonnet", directory=serialization_dir)
         os.system(cmd)
         cmd = "rm tmp.jsonnet"
         os.system(cmd)
