@@ -27,6 +27,7 @@ def train():
         cmd = "rm tmp.jsonnet"
         os.system(cmd)
 
+
 def score():
     accuracies = []
     for k in range(K):
