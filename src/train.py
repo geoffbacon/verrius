@@ -5,20 +5,23 @@ import os
 
 import _jsonnet
 
-from filenames import POS_CONFIG_FILENAME
+from filenames import CONFIG_FILENAME
 
 TRAIN_CMD = "allennlp train -s {directory} -f {config}"
+K = 5
 
 
 def train():
-    train_data_path = "data/evalatin/processed/pos.txt"
-    serialization_directory = "models"
-    # The -o override flag in allennlp train was finicky so I used a temporary file hack
-    config = json.loads(_jsonnet.evaluate_file(POS_CONFIG_FILENAME))
-    config["train_data_path"] = train_data_path
-    with open("tmp.jsonnet", "w") as file:
-        json.dump(config, file, indent=2)
-    cmd = TRAIN_CMD.format(config="tmp.jsonnet", directory=serialization_directory)
-    os.system(cmd)
-    cmd = "rm tmp.jsonnet"
-    os.system(cmd)
+    config = json.loads(_jsonnet.evaluate_file(CONFIG_FILENAME))
+    for n in range(K):
+        c = config.copy()
+        c["train_data_path"] = f"data/evalatin/processed/pos/{n}-train.txt"
+        c["validation_data_path"] = f"data/evalatin/processed/pos/{n}-valid.txt"
+        serialization_dir = f"models/pos/{n}"
+        # The -o override flag in allennlp train was finicky so I used a temporary file hack
+        with open("tmp.jsonnet", "w") as file:
+            json.dump(c, file, indent=2)
+        cmd = TRAIN_CMD.format(config="tmp.jsonnet", directory=serialization_directory)
+        os.system(cmd)
+        cmd = "rm tmp.jsonnet"
+        os.system(cmd)

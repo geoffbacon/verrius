@@ -37,6 +37,7 @@ format:
 refresh:
 	@rm -rf models/
 	@mkdir models
-	@touch models/.gitkeep
+	@mkdir models/pos
+	@touch models/pos/.gitkeep
 
 .PHONY: requirements install clean lint format refresh
