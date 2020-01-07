@@ -7,6 +7,8 @@ Part-of-speech tagger and lemmatizer for Latin.
     - Cross-validation
     - Ensemble
     - Pre-trained embeddings
+    - Experiments
+    - Postprocessing
     - Evaluation (output and script)
     - Error analysis
 - External unlabelled data

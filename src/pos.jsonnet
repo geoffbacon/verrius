@@ -40,8 +40,8 @@ local BIDIRECTIONAL_LSTM = {
             },
         },
     },
-    "train_data_path": "data/evalatin/processed/pos.txt",
-    #"validation_data_path": "",
+    "train_data_path": "",
+    "validation_data_path": "",
     "iterator": {
         "type": "basic",
         "batch_size": BATCH_SIZE
