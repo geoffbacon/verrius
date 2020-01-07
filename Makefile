@@ -33,4 +33,10 @@ format:
 
 # Data-related targets
 
-.PHONY: requirements install clean lint format
+# delete all trained models
+refresh:
+	@rm -rf models/
+	@mkdir models
+	@touch models/.gitkeep
+
+.PHONY: requirements install clean lint format refresh
