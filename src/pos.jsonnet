@@ -4,7 +4,7 @@
 local TOKEN_EMBEDDING_DIM = 50;
 local CHAR_EMBEDDING_DIM = 10;
 local USE_GPU = false;
-local NUM_EPOCHS = 1;
+local NUM_EPOCHS = 5;
 local BATCH_SIZE = 32;
 
 local CHARACTER_LSTM = {
