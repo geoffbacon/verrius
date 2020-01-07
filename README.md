@@ -4,7 +4,11 @@ Part-of-speech tagger and lemmatizer for Latin.
 
 ## To do
 - POS tagging
-    - Character token indexer
+    - Cross-validation
+    - Ensemble
+    - Pre-trained embeddings
+    - Evaluation (output and script)
+    - Error analysis
 - External unlabelled data
 - External labelled data
 - Data augmentation methods

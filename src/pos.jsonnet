@@ -2,10 +2,18 @@
 
 ## Hyperparams
 local TOKEN_EMBEDDING_DIM = 50;
-local CHAR_EMBEDDING_DIM = 8;
+local CHAR_EMBEDDING_DIM = 10;
 local USE_GPU = false;
 local NUM_EPOCHS = 5;
 local BATCH_SIZE = 32;
+
+local CHARACTER_LSTM = {
+    "type": "lstm",
+    "input_size": CHAR_EMBEDDING_DIM,
+    "hidden_size": CHAR_EMBEDDING_DIM,
+    "num_layers": 1,
+    "bidirectional": false
+};
 
 local BIDIRECTIONAL_LSTM = {
     "type": "lstm",
@@ -14,14 +22,6 @@ local BIDIRECTIONAL_LSTM = {
     "dropout": 0.5,
     "num_layers": 2,
     "bidirectional": true
-};
-
-local CHARACTER_LSTM = {
-    "type": "lstm",
-    "input_size": CHAR_EMBEDDING_DIM,
-    "hidden_size": CHAR_EMBEDDING_DIM,
-    "num_layers": 1,
-    "bidirectional": false
 };
 
 ## Static
@@ -40,8 +40,8 @@ local CHARACTER_LSTM = {
             },
         },
     },
-    "train_data_path": "",
-    "validation_data_path": "",
+    "train_data_path": "data/evalatin/processed/pos.txt",
+    #"validation_data_path": "",
     "iterator": {
         "type": "basic",
         "batch_size": BATCH_SIZE
