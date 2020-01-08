@@ -1,16 +1,23 @@
-"""Preprocessing Latin text data and preparing it for POS tagging and lemmatization."""
+"""Preprocessing tools for Latin text."""
 
-# I replace some types of forms (e.g. Greek words) with placeholder markers because
-# the specifics of their forms don't matter for these tasks. I also insert start and
-# end markers for word and sentence boundaries. For all these, I want the marker to
-# be a single token for convenience which do not appear in the cleaned text, and so
-# have chosen Greek letters for this task. Prior to adding any of these markers,
-# Greek letters from the original text have been removed.
-
+import os
 import re
 import unicodedata
 
 from segments import Tokenizer
+from sklearn.model_selection import KFold
+
+from filenames import GRAPHEME_PROFILE, PROCESSED_POS_DATA
+from utils import SEED, read, write
+
+# Clean word forms
+
+# We replace some types of word forms (e.g. Greek words) with placeholder characters
+# because their specific forms don't matter for our tasks. We also add start and end
+# characters for word and sentence boundaries. For all of these additional values,
+# it's easiest to use single characters that don't appear in the text. As we've remove
+# the Greek words, we chose to use Greek characters as our placeholders. These are
+# purely internal to this codebase.
 
 GREEK_TOKEN = "α"
 LACUNA_TOKEN = "β"
@@ -20,26 +27,22 @@ END_WORD = "ε"
 START_SENTENCE = "ζ"
 END_SENTENCE = "η"
 GRAPHEME_SEPARATOR = ""
-WORD_DELIMITER = "\t"
+WORD_SEPARATOR = " "
+WORD_TAG_DELIMITER = "/"
 
-char_class = lambda ch: unicodedata.name(ch).split()[0]
+
+def char_class(ch):
+    return unicodedata.name(ch).split()[0]
 
 
 def remove_other_chars(word):
     return "".join([ch for ch in word if char_class(ch) in ["LATIN", "GREEK", "FULL"]])
 
 
-def is_greek_char(ch):
-    return char_class(ch) == "GREEK"
-
-
-def is_greek_word(word):
-    return any(map(is_greek_char, word))
-
-
 def replace_greek_word(word):
-    if is_greek_word(word):
-        return GREEK_TOKEN
+    for ch in word:
+        if char_class(ch) == "GREEK":
+            return GREEK_TOKEN
     return word
 
 
@@ -79,23 +82,64 @@ def clean(word):
     word = replace_propn_abbreviation(word)
     word = replace_full_stop(word)
     word = replace_j(word)
-    word = word.lower()  # might not want to do this
+    word = word.lower()
     return word
 
 
-tokenizer = Tokenizer("src/profile.prf")
+# Tokenize
+
+tokenize_graphemes = Tokenizer(GRAPHEME_PROFILE)
+
+
+def clean_and_tokenize(word):
+    word = clean(word)
+    graphemes = tokenize_graphemes(
+        word, segment_separator=GRAPHEME_SEPARATOR, column="mapping"
+    )
+    return GRAPHEME_SEPARATOR.join([START_WORD, graphemes, END_WORD])
+
+
+def tokenize_words(text):
+    return text.split()
+
+
+# Preprocessing
 
 
 def preprocess(text):
-    result = []
-    for word in text.split():
-        form = tokenizer(
-            clean(word), segment_separator=GRAPHEME_SEPARATOR, column="mapping"
-        )
-        form = GRAPHEME_SEPARATOR.join(
-            [START_WORD, form, END_WORD]
-        )  # add in start/end word boundaries
-        result.append(form)
-    result[0] = START_SENTENCE + GRAPHEME_SEPARATOR + result[0]
-    result[-1] = result[-1] + GRAPHEME_SEPARATOR + END_SENTENCE
-    return WORD_DELIMITER.join(result)
+    words = tokenize_words(text)
+    words = [clean_and_tokenize(word) for word in words]
+    return WORD_SEPARATOR.join(words)
+
+
+# Prepare POS data
+
+
+def prepare_pos(K=5):
+    """Prepare data for POS tagging.
+    
+    We use K-form cross-validation. To ensure consistency across experiments as well
+    as to simplify our implementation, we pre-compute the folds and save them to disk.
+    """
+    # Read in all data into a single pyconll CoNLL structure
+    conll = read()
+
+    # Clean, tokenize and prepare each sentence
+    data = []
+    for sentence in conll:
+        line = []
+        for token in sentence:
+            cleaned_token = clean_and_tokenize(token.form)
+            pos = token.upos
+            instance = cleaned_token + WORD_TAG_DELIMITER + pos
+            line.append(instance)
+        data.append(WORD_SEPARATOR.join(line))
+
+    cv = KFold(K, shuffle=True, random_state=SEED)
+    for k, (train_idx, valid_idx) in enumerate(cv.split(data)):
+        train = [data[i] for i in train_idx]
+        valid = [data[i] for i in valid_idx]
+        filename = os.path.join(PROCESSED_POS_DATA, f"{k}-train.txt")
+        write(train, filename)
+        filename = os.path.join(PROCESSED_POS_DATA, f"{k}-valid.txt")
+        write(valid, filename)

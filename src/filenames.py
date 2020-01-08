@@ -5,5 +5,7 @@ if remote:
     ROOT = "/home/bacon/verrius"
 else:
     ROOT = "/Volumes/GoogleDrive/My Drive/research/evalatin/verrius"
-RAW_EVALATIN_TRAINING_DATA_DIR = "data/evalatin/raw"
-CONFIG_FILENAME = "src/pos.jsonnet"
+RAW_EVALATIN_DATA = "data/evalatin/raw"
+PROCESSED_POS_DATA = "data/evalatin/processed/pos"
+GRAPHEME_PROFILE = "src/profile.txt"
+POS_CONFIG = "src/pos.jsonnet"
