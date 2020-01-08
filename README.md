@@ -4,9 +4,7 @@ Part-of-speech tagger and lemmatizer for Latin.
 
 ## To do
 - POS tagging
-    - Preprocessing
-        - Start/end sentence boundaries
-    - Models.py
+    - pos.py
     - Pre-trained embeddings *
         - Words/Graphemes
         - Train
@@ -22,6 +20,8 @@ Part-of-speech tagger and lemmatizer for Latin.
     - Error analysis
     - Facilitate engagement
     - Lint
+    - Preprocessing
+        - Start/end sentence boundaries
 - Lemmatization
 - External unlabelled data
 - External labelled data

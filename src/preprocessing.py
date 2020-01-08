@@ -107,6 +107,7 @@ def tokenize_words(text):
 
 
 def preprocess(text):
+    """Preprocess unlabelled text."""
     words = tokenize_words(text)
     words = [clean_and_tokenize(word) for word in words]
     return WORD_SEPARATOR.join(words)
@@ -114,8 +115,10 @@ def preprocess(text):
 
 # Prepare POS data
 
+K = 5
 
-def prepare_pos(K=5):
+
+def prepare_pos(K=K):
     """Prepare data for POS tagging.
     
     We use K-form cross-validation. To ensure consistency across experiments as well
