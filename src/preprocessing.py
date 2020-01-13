@@ -12,12 +12,12 @@ from utils import SEED, read, write
 
 # Clean word forms
 
-# We replace some types of word forms (e.g. Greek words) with placeholder characters
-# because their specific forms don't matter for our tasks. We also add start and end
-# characters for word and sentence boundaries. For all of these additional values,
-# it's easiest to use single characters that don't appear in the text. As we've remove
-# the Greek words, we chose to use Greek characters as our placeholders. These are
-# purely internal to this codebase.
+# We replace some types of word forms (e.g. Greek words) with placeholder
+# characters because their specific forms don't matter for our tasks. We also
+# add start and end characters for word and sentence boundaries. For all of
+# these additional values, it's easiest to use single characters that don't
+# appear in the text. As we've remove the Greek words, we chose to use Greek
+# characters as our placeholders. These are purely internal to this codebase.
 
 GREEK_TOKEN = "α"
 LACUNA_TOKEN = "β"
@@ -36,7 +36,8 @@ def char_class(ch):
 
 
 def remove_other_chars(word):
-    return "".join([ch for ch in word if char_class(ch) in ["LATIN", "GREEK", "FULL"]])
+    chars = [ch for ch in word if char_class(ch) in ["LATIN", "GREEK", "FULL"]]
+    return "".join(chars)
 
 
 def replace_greek_word(word):
@@ -118,11 +119,12 @@ def preprocess(text):
 K = 5
 
 
-def prepare_pos(K=K):
+def prepare_pos(num_splits=K):
     """Prepare data for POS tagging.
-    
-    We use K-form cross-validation. To ensure consistency across experiments as well
-    as to simplify our implementation, we pre-compute the folds and save them to disk.
+
+    We use K-form cross-validation. To ensure consistency across experiments
+    as well as to simplify our implementation, we pre-compute the folds and
+    save them to disk.
     """
     # Read in all data into a single pyconll CoNLL structure
     conll = read()
@@ -138,7 +140,7 @@ def prepare_pos(K=K):
             line.append(instance)
         data.append(WORD_SEPARATOR.join(line))
 
-    cv = KFold(K, shuffle=True, random_state=SEED)
+    cv = KFold(num_splits, shuffle=True, random_state=SEED)
     for k, (train_idx, valid_idx) in enumerate(cv.split(data)):
         train = [data[i] for i in train_idx]
         valid = [data[i] for i in valid_idx]

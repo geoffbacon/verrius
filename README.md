@@ -4,7 +4,6 @@ Part-of-speech tagger and lemmatizer for Latin.
 
 ## To do
 - POS tagging
-    - pos.py
     - Pre-trained embeddings *
         - Words/Graphemes
         - Train
