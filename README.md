@@ -10,10 +10,14 @@ Part-of-speech tagger and lemmatizer for Latin.
             - Hyperparams
             - Data *
                 - EvaLatin
-                - Other
+                - CLTK corpora
     - Hyperparameter optimization
         - 10-fold CV
-        - 
+        - TOKEN_EMBEDDING_DIM
+        - CHAR_EMBEDDING_DIM
+        - BATCH_SIZE
+        - BIDIRECTIONAL_LSTM["hidden_size"]
+        - Embeddings on other data
     - Postprocessing
     - Evaluation (output and script)
     - Error analysis
