@@ -11,10 +11,9 @@ Part-of-speech tagger and lemmatizer for Latin.
             - Data *
                 - EvaLatin
                 - Other
-        - Figure out how to load into model *
     - Hyperparameter optimization
         - 10-fold CV
-    - Experiments
+        - 
     - Postprocessing
     - Evaluation (output and script)
     - Error analysis

@@ -8,7 +8,8 @@ import numpy as np
 import pandas as pd
 from allennlp.predictors import Predictor
 
-from filenames import POS_CONFIG, POS_MODELS, PROCESSED_POS_DATA
+from filenames import (POS_CONFIG, POS_MODELS, PROCESSED_POS_DATA,
+                       VECTORS_FILENAME_TEMPLATE)
 from preprocessing import K, preprocess, tokenize_words
 
 TMP_FILENAME = "tmp.jsonnet"
@@ -21,6 +22,9 @@ def train(k, options=None):
     config = json.loads(_jsonnet.evaluate_file(POS_CONFIG))
     config["train_data_path"] = os.path.join(PROCESSED_POS_DATA, f"{k}-train.txt")
     config["validation_data_path"] = os.path.join(PROCESSED_POS_DATA, f"{k}-valid.txt")
+    # config["model"]["text_field_embedder"]["token_embedders"]["tokens"][
+    #     "pretrained_file"
+    # ] = VECTORS_FILENAME_TEMPLATE.format(k, 100)
     if options:
         config.update(options)
     # The override flag in allennlp was finicky so I used a temporary file hack
