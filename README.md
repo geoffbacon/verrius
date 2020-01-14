@@ -4,13 +4,14 @@ Part-of-speech tagger and lemmatizer for Latin.
 
 ## To do
 - POS tagging
-    - Pre-trained embeddings *
-        - Words/Graphemes
+    - Pre-trained embeddings
         - Train
             - Model
             - Hyperparams
-            - Data
-        - Figure out how to load into model
+            - Data *
+                - EvaLatin
+                - Other
+        - Figure out how to load into model *
     - Hyperparameter optimization
         - 10-fold CV
     - Experiments

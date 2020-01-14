@@ -1,6 +1,9 @@
 # Model directory
 models/**
 
+# Log directory
+logs/**
+
 # MacOS
 **/.DS_Store
 
