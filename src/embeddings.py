@@ -9,7 +9,8 @@ from gensim.models.callbacks import CallbackAny2Vec
 from gensim.models.keyedvectors import FastTextKeyedVectors
 from tqdm import tqdm
 
-from filenames import LOG_DIR, PROCESSED_POS_DATA, VECTORS_FILENAME_TEMPLATE
+from filenames import (LOG_DIR, PERSEUS_FILENAME, PROCESSED_POS_DATA,
+                       VECTORS_FILENAME_TEMPLATE)
 from preprocessing import WORD_SEPARATOR, WORD_TAG_DELIMITER, K
 
 # silence gensim's logging
@@ -20,14 +21,10 @@ warnings.simplefilter(action="ignore", category=UserWarning)
 class Corpus:
     """Provide access to the training data preprocessed text of a POS-tagged text file."""
 
-    def __init__(self, k):
-        self.filename = os.path.join(PROCESSED_POS_DATA, f"{k}-train.txt")
-
     def __iter__(self):
-        with open(self.filename) as file:
+        with open(PERSEUS_FILENAME) as file:
             for line in file:
-                pairs = line.strip().split(WORD_SEPARATOR)
-                yield [pair.split(WORD_TAG_DELIMITER)[0] for pair in pairs]
+                yield line.strip().split()
 
     def count(self):
         """Return the number of lines and words in the corpus."""
@@ -72,7 +69,7 @@ def train(
     epochs=10,  # number of iterations over the corpus
     min_ngram=3,  # minimum length of n-grams
     max_ngram=6,  # maximum length of n-grams
-    min_count=1,  # minimum token frequency
+    min_count=3,  # minimum token frequency
     skipgram=1,  # use skipgram over CBOW
     ngrams=1,  # use fasttext over word2vec
     workers=4,  # number of threads
@@ -82,7 +79,7 @@ def train(
     Hyperparameters can be specified either at the command line.
     
     """
-    corpus = Corpus(k)
+    corpus = Corpus()
     num_lines, num_words = corpus.count()
     model = FastText(
         size=size,
@@ -94,7 +91,7 @@ def train(
         word_ngrams=ngrams,
         workers=workers,
     )
-    model._k = k  # add CV k for logging purposes
+    model._k = "perseus"
     model.build_vocab(sentences=corpus)
     callback = Callback(epochs)
     model.train(
@@ -114,5 +111,4 @@ def train(
 
 
 if __name__ == "__main__":
-    for k in range(K):
-        train(k, size=100)
+    train("perseus", size=100)
