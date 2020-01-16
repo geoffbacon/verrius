@@ -108,4 +108,5 @@ def train(
 
 
 if __name__ == "__main__":
-    train(size=100)
+    for size in [10, 25, 50, 100, 200, 300]:
+        train(size=size)

@@ -9,7 +9,8 @@ import numpy as np
 import pandas as pd
 from allennlp.predictors import Predictor
 
-from filenames import (POS_CONFIG, POS_MODELS, PROCESSED_POS_DATA, VECTORS_FILENAME)
+from filenames import (POS_CONFIG, POS_MODELS, PROCESSED_POS_DATA,
+                       VECTORS_FILENAME)
 from preprocessing import K, preprocess, tokenize_words
 
 TMP_FILENAME = "tmp.jsonnet"
@@ -100,12 +101,15 @@ def predict_ensemble(text):
     tokens = tokenize_words(text)
     return pd.DataFrame({"form": tokens, "tag": mode})
 
+
 if __name__ == "__main__":
-    options = {"TOKEN_EMBEDDING_DIM": 100,
-               "CHAR_EMBEDDING_DIM": 10,
-               "HIDDEN_SIZE": 100,
-               "BATCH_SIZE": 32,
-               "USE_PRETRAINED": "true",
-               "NUM_EPOCHS": 3,
-               "USE_GPU": "false"}
+    options = {
+        "TOKEN_EMBEDDING_DIM": 100,
+        "CHAR_EMBEDDING_DIM": 10,
+        "HIDDEN_SIZE": 100,
+        "BATCH_SIZE": 32,
+        "USE_PRETRAINED": "true",
+        "NUM_EPOCHS": 3,
+        "USE_GPU": "false",
+    }
     train(0, options)
