@@ -3,10 +3,12 @@
 ## Hyperparams
 local TOKEN_EMBEDDING_DIM = 100;
 local CHAR_EMBEDDING_DIM = 10;
-local HIDDEN_SIZE = 100
-local USE_GPU = false;
-local NUM_EPOCHS = 10;
+local HIDDEN_SIZE = 100;
+local PRETRAINED = false;
+local PRETRAINED_FILE = if PRETRAINED then 0 else "";
 local BATCH_SIZE = 32;
+local NUM_EPOCHS = 10;
+local USE_GPU = false;
 
 local CHARACTER_LSTM = {
     "type": "lstm",

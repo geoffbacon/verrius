@@ -14,7 +14,7 @@ Part-of-speech tagger and lemmatizer for Latin.
             - 5, 10
         - BATCH_SIZE
             - 16, 32
-        - BIDIRECTIONAL_LSTM["hidden_size"]
+        - HIDDEN_SIZE
             - 50, 100, 200
         - Word embeddings
             - With and without
