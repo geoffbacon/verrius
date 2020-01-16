@@ -7,6 +7,7 @@ Part-of-speech tagger and lemmatizer for Latin.
     - Pre-trained embeddings
         - Train different sizes *
     - Hyperparameter optimization *
+        - How to save models
         - 10-fold CV
         - TOKEN_EMBEDDING_DIM
             - 10, 25, 50, 100, 200, 300

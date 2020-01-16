@@ -100,10 +100,12 @@ def predict_ensemble(text):
     tokens = tokenize_words(text)
     return pd.DataFrame({"form": tokens, "tag": mode})
 
-# if __name__ == "__main__":
-#     options = {"TOKEN_EMBEDDING_DIM": 100,
-#                "CHAR_EMBEDDING_DIM": 10,
-#                "HIDDEN_SIZE": 100,
-#                "BATCH_SIZE": 32,
-#                "USE_PRETRAINED": "false"}
-#     train(0, options)
+if __name__ == "__main__":
+    options = {"TOKEN_EMBEDDING_DIM": 100,
+               "CHAR_EMBEDDING_DIM": 10,
+               "HIDDEN_SIZE": 100,
+               "BATCH_SIZE": 32,
+               "USE_PRETRAINED": "true",
+               "NUM_EPOCHS": 3,
+               "USE_GPU": "false"}
+    train(0, options)
