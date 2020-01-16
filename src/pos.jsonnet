@@ -4,9 +4,9 @@
 local TOKEN_EMBEDDING_DIM = 100;
 local CHAR_EMBEDDING_DIM = 10;
 local HIDDEN_SIZE = 100;
-local PRETRAINED = false;
-local PRETRAINED_FILE = if PRETRAINED then 0 else "";
 local BATCH_SIZE = 32;
+local USE_PRETRAINED = false;
+local PRETRAINED_FILE = "models/embeddings/vectors-" + TOKEN_EMBEDDING_DIM + ".txt";
 local NUM_EPOCHS = 10;
 local USE_GPU = false;
 
@@ -67,7 +67,8 @@ local BIDIRECTIONAL_LSTM = {
                 "tokens": {
                     "type": "embedding",
                     "embedding_dim": TOKEN_EMBEDDING_DIM,
-                    "trainable": true
+                    "trainable": true,
+                    "pretrained_file": if USE_PRETRAINED then PRETRAINED_FILE else ""
                 },
                 "token_characters": {
                     "type": "character_encoding",

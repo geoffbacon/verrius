@@ -43,7 +43,7 @@ def extract(name):
             cleaned_sentence = preprocess(clean(sentence))
             cleaned_sentence = re.sub(r"\s+", " ", cleaned_sentence).strip()
             if len(cleaned_sentence.split()) >= 5:
-                if "�" not in line:
+                if "�" not in cleaned_sentence:
                     lines.append(cleaned_sentence)
         except:
             continue

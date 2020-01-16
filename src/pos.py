@@ -9,8 +9,7 @@ import numpy as np
 import pandas as pd
 from allennlp.predictors import Predictor
 
-from filenames import (POS_CONFIG, POS_MODELS, PROCESSED_POS_DATA,
-                       VECTORS_FILENAME_TEMPLATE)
+from filenames import (POS_CONFIG, POS_MODELS, PROCESSED_POS_DATA, VECTORS_FILENAME)
 from preprocessing import K, preprocess, tokenize_words
 
 TMP_FILENAME = "tmp.jsonnet"
@@ -23,7 +22,7 @@ def prepare(options):
     with open(POS_CONFIG) as file:
         contents = file.read()
     for key, value in options.items():
-        pattern = f"local {key} = \d+;"
+        pattern = f"local {key} = [a-z0-9]+;"
         repl = f"local {key} = {value};"
         contents = re.sub(pattern, repl, contents)
     with open(TMP_FILENAME, "w") as file:
@@ -34,14 +33,10 @@ def prepare(options):
 
 
 def train(k, options=None):
-    config = json.loads(_jsonnet.evaluate_file(POS_CONFIG))
+    prepare(options)
+    config = json.loads(_jsonnet.evaluate_file(TMP_FILENAME))
     config["train_data_path"] = os.path.join(PROCESSED_POS_DATA, f"{k}-train.txt")
     config["validation_data_path"] = os.path.join(PROCESSED_POS_DATA, f"{k}-valid.txt")
-    config["model"]["text_field_embedder"]["token_embedders"]["tokens"][
-        "pretrained_file"
-    ] = VECTORS_FILENAME_TEMPLATE.format("perseus", 100)
-    if options:
-        config.update(options)
     # The override flag in allennlp was finicky so I used a temporary file hack
     with open(TMP_FILENAME, "w") as file:
         json.dump(config, file, indent=2)
@@ -104,3 +99,11 @@ def predict_ensemble(text):
     mode = df.mode(axis=1)[0]
     tokens = tokenize_words(text)
     return pd.DataFrame({"form": tokens, "tag": mode})
+
+# if __name__ == "__main__":
+#     options = {"TOKEN_EMBEDDING_DIM": 100,
+#                "CHAR_EMBEDDING_DIM": 10,
+#                "HIDDEN_SIZE": 100,
+#                "BATCH_SIZE": 32,
+#                "USE_PRETRAINED": "false"}
+#     train(0, options)
