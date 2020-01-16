@@ -97,7 +97,9 @@ def clean_and_tokenize(word):
     graphemes = tokenize_graphemes(
         word, segment_separator=GRAPHEME_SEPARATOR, column="mapping"
     )
-    return GRAPHEME_SEPARATOR.join([START_WORD, graphemes, END_WORD])
+    if graphemes:
+        return GRAPHEME_SEPARATOR.join([START_WORD, graphemes, END_WORD])
+    return ""
 
 
 def tokenize_words(text):
@@ -116,7 +118,7 @@ def preprocess(text):
 
 # Prepare POS data
 
-K = 5
+K = 10
 
 
 def prepare_pos(num_splits=K):

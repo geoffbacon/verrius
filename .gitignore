@@ -1,6 +1,9 @@
 # Model directory
 models/**
 
+# External data directory
+data/external/**
+
 # Log directory
 logs/**
 

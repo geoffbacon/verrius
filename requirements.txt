@@ -12,3 +12,6 @@ pandas
 matplotlib
 seaborn
 allennlp
+cltk
+tqdm
+gensim

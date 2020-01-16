@@ -9,9 +9,9 @@ from gensim.models.callbacks import CallbackAny2Vec
 from gensim.models.keyedvectors import FastTextKeyedVectors
 from tqdm import tqdm
 
-from filenames import (LOG_DIR, PERSEUS_FILENAME, PROCESSED_POS_DATA,
-                       VECTORS_FILENAME_TEMPLATE)
-from preprocessing import WORD_SEPARATOR, WORD_TAG_DELIMITER, K
+from filenames import (EXTERNAL_CORPUS_FILENAME, LOG_DIR,
+                       VECTORS_FILENAME)
+from preprocessing import WORD_SEPARATOR, WORD_TAG_DELIMITER
 
 # silence gensim's logging
 logging.getLogger("gensim").setLevel(logging.ERROR)
@@ -19,10 +19,10 @@ warnings.simplefilter(action="ignore", category=UserWarning)
 
 
 class Corpus:
-    """Provide access to the training data preprocessed text of a POS-tagged text file."""
+    """Provide access to external unlabelled data."""
 
     def __iter__(self):
-        with open(PERSEUS_FILENAME) as file:
+        with open(EXTERNAL_CORPUS_FILENAME) as file:
             for line in file:
                 yield line.strip().split()
 
@@ -55,15 +55,14 @@ class Callback(CallbackAny2Vec):
         self.i += 1
 
     def on_train_begin(self, model):
-        logging.info(f"Training K={model._k} size={model.vector_size}")
+        logging.info(f"Training size={model.vector_size}")
 
     def on_train_end(self, model):
-        logging.info(f"Finished training K={model._k} size={model.vector_size}")
+        logging.info(f"Finished training size={model.vector_size}")
 
 
 # pylint: disable=C0330
 def train(
-    k,  # the cross-validation fold to train on
     size=300,  # size of the embeddings
     window=4,  # context window
     epochs=10,  # number of iterations over the corpus
@@ -91,7 +90,6 @@ def train(
         word_ngrams=ngrams,
         workers=workers,
     )
-    model._k = "perseus"
     model.build_vocab(sentences=corpus)
     callback = Callback(epochs)
     model.train(
@@ -101,7 +99,7 @@ def train(
         epochs=epochs,
         callbacks=[callback],
     )
-    filename = VECTORS_FILENAME_TEMPLATE.format(k, size)
+    filename = VECTORS_FILENAME.format(size)
     model.wv.save_word2vec_format(filename, binary=False)
     # Remove header line
     with open(filename, "r") as file:
@@ -111,4 +109,4 @@ def train(
 
 
 if __name__ == "__main__":
-    train("perseus", size=100)
+    train(size=100)
