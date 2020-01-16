@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 
 import _jsonnet
 import numpy as np
@@ -14,6 +15,20 @@ from preprocessing import K, preprocess, tokenize_words
 
 TMP_FILENAME = "tmp.jsonnet"
 TRAIN_CMD = "allennlp train -s {directory} -f {config} && rm {config}"
+
+# Prepare config
+
+
+def prepare(options):
+    with open(POS_CONFIG) as file:
+        contents = file.read()
+    for key, value in options.items():
+        pattern = f"local {key} = \d+;"
+        repl = f"local {key} = {value};"
+        contents = re.sub(pattern, repl, contents)
+    with open(TMP_FILENAME, "w") as file:
+        file.write(contents)
+
 
 # Train
 

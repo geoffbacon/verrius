@@ -4,8 +4,8 @@ Part-of-speech tagger and lemmatizer for Latin.
 
 ## To do
 - POS tagging
-    - Pre-trained embeddings *
-        - Train
+    - Pre-trained embeddings
+        - Train different sizes *
     - Hyperparameter optimization *
         - 10-fold CV
         - TOKEN_EMBEDDING_DIM

@@ -9,8 +9,7 @@ from gensim.models.callbacks import CallbackAny2Vec
 from gensim.models.keyedvectors import FastTextKeyedVectors
 from tqdm import tqdm
 
-from filenames import (EXTERNAL_CORPUS_FILENAME, LOG_DIR,
-                       VECTORS_FILENAME)
+from filenames import EXTERNAL_CORPUS_FILENAME, LOG_DIR, VECTORS_FILENAME
 from preprocessing import WORD_SEPARATOR, WORD_TAG_DELIMITER
 
 # silence gensim's logging

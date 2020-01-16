@@ -41,9 +41,10 @@ def extract(name):
     for sentence in tqdm(sentences):
         try:
             cleaned_sentence = preprocess(clean(sentence))
-            cleaned_sentence = re.sub(r"\s+", " ", cleaned_sentence)
+            cleaned_sentence = re.sub(r"\s+", " ", cleaned_sentence).strip()
             if len(cleaned_sentence.split()) >= 5:
-                lines.append(cleaned_sentence)
+                if "�" not in line:
+                    lines.append(cleaned_sentence)
         except:
             continue
     return lines

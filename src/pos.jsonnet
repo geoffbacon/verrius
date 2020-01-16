@@ -3,6 +3,7 @@
 ## Hyperparams
 local TOKEN_EMBEDDING_DIM = 100;
 local CHAR_EMBEDDING_DIM = 10;
+local HIDDEN_SIZE = 100
 local USE_GPU = false;
 local NUM_EPOCHS = 10;
 local BATCH_SIZE = 32;
@@ -17,7 +18,7 @@ local CHARACTER_LSTM = {
 
 local BIDIRECTIONAL_LSTM = {
     "type": "lstm",
-    "hidden_size": 100,
+    "hidden_size": HIDDEN_SIZE,
     "input_size": TOKEN_EMBEDDING_DIM + CHARACTER_LSTM["hidden_size"],
     "dropout": 0.5,
     "num_layers": 2,
