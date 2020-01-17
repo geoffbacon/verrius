@@ -117,7 +117,7 @@ def train(
 
 
 if __name__ == "__main__":
-    for size in [10, 25]:
+    for size in [10, 25, 50, 100, 200, 300]:
         train(unit="words", size=size)
-    for size in [5, 10]:
+    for size in [5, 10, 20]:
         train(unit="chars", size=size, ngrams=0)

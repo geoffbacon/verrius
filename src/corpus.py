@@ -20,7 +20,7 @@ CORPUS_NAMES = ["latin_text_perseus", "latin_text_tesserae", "latin_text_latin_l
 
 def download(names):
     importer = CorpusImporter("latin")
-    for name in names:
+    for name in names + ["latin_models_cltk"]:
         importer.import_corpus(name)
 
 
