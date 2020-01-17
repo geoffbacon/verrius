@@ -3,18 +3,20 @@
 import json
 import os
 import re
+from itertools import product
 
 import _jsonnet
 import numpy as np
 import pandas as pd
 from allennlp.predictors import Predictor
+import torch
 
 from filenames import POS_CONFIG, POS_MODELS, PROCESSED_POS_DATA
 from preprocessing import K, preprocess, tokenize_words
 
 TMP_FILENAME = "tmp.jsonnet"
 TRAIN_CMD = "allennlp train -s {directory} -f {config} && rm {config}"
-
+GPU_AVAILABLE = str(torch.cuda.is_available()).lower()
 
 def make_serialization_dirname(options):
     return POS_MODELS.format(**options)
@@ -84,15 +86,29 @@ def predict(options, text):
 
 
 if __name__ == "__main__":
-    options = {
-        "TOKEN_EMBEDDING_DIM": 25,
-        "CHAR_EMBEDDING_DIM": 10,
-        "HIDDEN_SIZE": 100,
-        "BATCH_SIZE": 32,
-        "USE_PRETRAINED_WORDS": "true",
-        "USE_PRETRAINED_CHARS": "true",
-        "NUM_EPOCHS": 3,
-        "USE_GPU": "false",
-        "FOLD": 0,
-    }
-    train(options)
+    TOKEN_EMBEDDING_DIMS = [10, 25, 50, 100, 200, 300]
+    CHAR_EMBEDDING_DIMS = [5, 10, 20]
+    HIDDEN_SIZES = [25, 50, 100, 200]
+    BATCH_SIZES = [8, 16, 32, 64]
+    USE_PRETRAINED = map(lambda s: str(s).lower(), [True, False])
+    FOLDS = range(K)
+    for hyperparams in product(
+        TOKEN_EMBEDDING_DIMS,
+        CHAR_EMBEDDING_DIMS,
+        HIDDEN_SIZES,
+        BATCH_SIZES,
+        USE_PRETRAINED,
+        FOLDS,
+    ):
+        options = {
+            "TOKEN_EMBEDDING_DIM": hyperparams[0],
+            "CHAR_EMBEDDING_DIM": hyperparams[1],
+            "HIDDEN_SIZE": hyperparams[2],
+            "BATCH_SIZE": hyperparams[3],
+            "USE_PRETRAINED_WORDS": hyperparams[4],
+            "USE_PRETRAINED_CHARS": hyperparams[4],
+            "NUM_EPOCHS": 10,
+            "USE_GPU": GPU_AVAILABLE,
+            "FOLD": hyperparams[5],
+        }
+        # train(options)
