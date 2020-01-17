@@ -61,7 +61,7 @@ local BIDIRECTIONAL_LSTM = {
             "type": "adam"
         },
         "num_epochs": NUM_EPOCHS,
-        "patience": std.max(std.floor(NUM_EPOCHS / 2), 2),
+        "patience": 2,
         "cuda_device": if USE_GPU then 0 else -1,
         "shuffle": true,
         "num_serialized_models_to_keep": -1
