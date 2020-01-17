@@ -87,7 +87,7 @@ def predict(options, text):
 
 
 if __name__ == "__main__":
-    USE_PRETRAINED = ['true']
+    USE_PRETRAINED = ["true"]
     BATCH_SIZES = [8, 16]
     HIDDEN_SIZES = [25, 50, 100, 200]
     TOKEN_EMBEDDING_DIMS = [10, 25, 50, 100, 200, 300]
