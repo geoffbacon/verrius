@@ -1,4 +1,4 @@
-"""Basic utilities used across different modules."""
+"""Utilities used across different modules."""
 
 import fileinput
 import pathlib

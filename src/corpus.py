@@ -1,3 +1,10 @@
+"""Create unlabelled corpus of Latin to learn embeddings from.
+
+This module is intended to be run as a script:
+    $ python src/corpus.py
+    
+"""
+
 import re
 from string import punctuation
 
@@ -11,13 +18,12 @@ from utils import write
 
 PUNCTUATION = punctuation.replace(".", "")
 
-
 CORPUS_NAMES = ["latin_text_perseus", "latin_text_tesserae", "latin_text_latin_library"]
 
 
-def download():
+def download(names):
     importer = CorpusImporter("latin")
-    for name in CORPUS_NAMES:
+    for name in names:
         importer.import_corpus(name)
 
 
@@ -51,6 +57,7 @@ def extract(name):
 
 
 if __name__ == "__main__":
+    download(CORPUS_NAMES)
     lines = []
     for name in CORPUS_NAMES:
         lines.extend(extract(name))

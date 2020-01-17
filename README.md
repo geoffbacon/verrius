@@ -3,12 +3,12 @@
 Part-of-speech tagger and lemmatizer for Latin.
 
 ## To do
+- Add to Makefile
 - POS tagging
     - Pre-trained embeddings
         - Train different sizes *
     - Hyperparameter optimization *
         - How to save models
-        - 10-fold CV
         - TOKEN_EMBEDDING_DIM
             - 10, 25, 50, 100, 200, 300
         - CHAR_EMBEDDING_DIM
@@ -20,10 +20,10 @@ Part-of-speech tagger and lemmatizer for Latin.
         - Word embeddings
             - With and without
     - Postprocessing
-    - Evaluation (output and script)
+    - Evaluation (output, script and analysis)
     - Error analysis
     - Facilitate engagement
-    - Lint
+    - Lint and clean up
     - Preprocessing
         - Start/end sentence boundaries
 - Lemmatization

@@ -33,16 +33,27 @@ format:
 
 # Data-related targets
 
+# create orthography profile
+profile:
+	python src/profile.py
+
 # preprocess data
 preprocess:
 	jupyter nbconvert --ExecutePreprocessor.timeout=-1 --execute src/EDAP.ipynb && \
 	rm src/EDAP.html &
 
+# create unlabelled corpus
+corpus:
+	python src/corpus.py
+
+# train word embeddings
+embeddings:
+	nohup python -u src/embeddings.py > logs/embeddings.out &
+
 # delete all trained models
 refresh:
 	@rm -rf models/
-	@mkdir models
-	@mkdir models/pos
-	@touch models/pos/.gitkeep
+	@mkdir models models/pos models/embeddings
+	@touch models/pos/.gitkeep models/embeddings.gitkeep
 
-.PHONY: requirements install clean lint format preprocess refresh
+.PHONY: requirements install clean lint format profile preprocess corpus embeddings refresh

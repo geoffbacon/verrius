@@ -7,6 +7,7 @@ local HIDDEN_SIZE = 100;
 local BATCH_SIZE = 32;
 local USE_PRETRAINED = false;
 local PRETRAINED_FILE = "models/embeddings/vectors-" + TOKEN_EMBEDDING_DIM + ".txt";
+local FOLD = 0;
 local NUM_EPOCHS = 10;
 local USE_GPU = false;
 
@@ -43,8 +44,8 @@ local BIDIRECTIONAL_LSTM = {
             },
         },
     },
-    "train_data_path": "",
-    "validation_data_path": "",
+    "train_data_path": "data/evalatin/processed/pos/" + FOLD + "-train.txt",
+    "validation_data_path": "data/evalatin/processed/pos/" + FOLD + "-valid.txt",
     "iterator": {
         "type": "basic",
         "batch_size": BATCH_SIZE
