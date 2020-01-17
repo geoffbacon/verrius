@@ -87,29 +87,29 @@ def predict(options, text):
 
 
 if __name__ == "__main__":
+    USE_PRETRAINED = ['true']
+    BATCH_SIZES = [8, 16]
+    HIDDEN_SIZES = [25, 50, 100, 200]
     TOKEN_EMBEDDING_DIMS = [10, 25, 50, 100, 200, 300]
     CHAR_EMBEDDING_DIMS = [5, 10, 20]
-    HIDDEN_SIZES = [25, 50, 100, 200]
-    BATCH_SIZES = [8, 16, 32, 64]
-    USE_PRETRAINED = map(lambda s: str(s).lower(), [True, False])
     FOLDS = range(K)
     for hyperparams in product(
+        USE_PRETRAINED,
+        BATCH_SIZES,
+        HIDDEN_SIZES,
         TOKEN_EMBEDDING_DIMS,
         CHAR_EMBEDDING_DIMS,
-        HIDDEN_SIZES,
-        BATCH_SIZES,
-        USE_PRETRAINED,
         FOLDS,
     ):
         options = {
-            "TOKEN_EMBEDDING_DIM": hyperparams[0],
-            "CHAR_EMBEDDING_DIM": hyperparams[1],
+            "USE_PRETRAINED_WORDS": hyperparams[0],
+            "USE_PRETRAINED_CHARS": hyperparams[0],
+            "BATCH_SIZE": hyperparams[1],
             "HIDDEN_SIZE": hyperparams[2],
-            "BATCH_SIZE": hyperparams[3],
-            "USE_PRETRAINED_WORDS": hyperparams[4],
-            "USE_PRETRAINED_CHARS": hyperparams[4],
+            "TOKEN_EMBEDDING_DIM": hyperparams[3],
+            "CHAR_EMBEDDING_DIM": hyperparams[4],
+            "FOLD": hyperparams[5],
             "NUM_EPOCHS": 10,
             "USE_GPU": GPU_AVAILABLE,
-            "FOLD": hyperparams[5],
         }
-        # train(options)
+        train(options)

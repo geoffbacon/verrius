@@ -49,6 +49,10 @@ corpus:
 embeddings:
 	nohup python -u src/embeddings.py > /dev/null &
 
+# train POS models
+pos:
+	nohup python -u src/pos.py > /dev/null &
+
 # delete all trained models
 refresh:
 	@rm -rf models/
