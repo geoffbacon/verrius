@@ -3,6 +3,7 @@
 import os
 import re
 import unicodedata
+from string import punctuation
 
 import fire
 from segments import Tokenizer
@@ -10,6 +11,8 @@ from sklearn.model_selection import KFold
 
 from filenames import GRAPHEME_PROFILE, PROCESSED_POS_DATA
 from utils import SEED, read, write
+
+PUNCTUATION = punctuation.replace(".", "")
 
 # Clean word forms
 
@@ -108,6 +111,17 @@ def tokenize_words(text):
 
 
 # Preprocessing
+
+def preprocess_like_evalatin(text):
+    """Preprocess `text` like the EvaLatin organizers did, before my own preprocessing.
+    
+    We only need this for `text` that doesn't come from the EvaLatin organizers.
+    
+    """
+    text = "".join([ch for ch in text if ch not in PUNCTUATION])
+    text = text.replace("v", "u")
+    text = text.replace("j", "i")
+    return text
 
 
 def preprocess(text):

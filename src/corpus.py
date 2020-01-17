@@ -6,17 +6,14 @@ This module is intended to be run as a script:
 """
 
 import re
-from string import punctuation
 
 from cltk.corpus.readers import get_corpus_reader
 from cltk.corpus.utils.importer import CorpusImporter
 from tqdm import tqdm
 
 from filenames import EXTERNAL_CORPUS_FILENAME
-from preprocessing import preprocess
+from preprocessing import preprocess, preprocess_like_evalatin
 from utils import write
-
-PUNCTUATION = punctuation.replace(".", "")
 
 CORPUS_NAMES = ["latin_text_perseus", "latin_text_tesserae", "latin_text_latin_library"]
 
@@ -25,14 +22,6 @@ def download(names):
     importer = CorpusImporter("latin")
     for name in names:
         importer.import_corpus(name)
-
-
-def clean(text):
-    """Preprocess `text` like the EvaLatin organizers did."""
-    text = "".join([ch for ch in text if ch not in PUNCTUATION])
-    text = text.replace("v", "u")
-    text = text.replace("j", "i")
-    return text
 
 
 def extract(name):
@@ -46,7 +35,7 @@ def extract(name):
         sentences = (" ".join(sentence) for sentence in reader.sents())
     for sentence in tqdm(sentences):
         try:
-            cleaned_sentence = preprocess(clean(sentence))
+            cleaned_sentence = preprocess(preprocess_like_evalatin(sentence))
             cleaned_sentence = re.sub(r"\s+", " ", cleaned_sentence).strip()
             if len(cleaned_sentence.split()) >= 5:
                 if "�" not in cleaned_sentence:
