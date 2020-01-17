@@ -151,5 +151,6 @@ def prepare_pos(num_splits=K):
         filename = os.path.join(PROCESSED_POS_DATA, f"{k}-valid.txt")
         write(valid, filename)
 
+
 if __name__ == "__main__":
     prepare_pos(K)

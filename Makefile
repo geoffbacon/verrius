@@ -37,10 +37,10 @@ format:
 profile:
 	python src/profile.py
 
+
 # preprocess data
 preprocess:
-	jupyter nbconvert --ExecutePreprocessor.timeout=-1 --execute src/EDAP.ipynb && \
-	rm src/EDAP.html &
+	python src/preprocessing.py
 
 # create unlabelled corpus
 corpus:
