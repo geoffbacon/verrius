@@ -1,4 +1,4 @@
-"""POS tagging model"""
+"""Tools for training, evaluating and using POS models."""
 
 import json
 import os
@@ -15,74 +15,52 @@ from preprocessing import K, preprocess, tokenize_words
 TMP_FILENAME = "tmp.jsonnet"
 TRAIN_CMD = "allennlp train -s {directory} -f {config} && rm {config}"
 
-# Utils
 
-
-def make_dirname(options):
+def make_serialization_dirname(options):
     return POS_MODELS.format(**options)
 
 
-# Prepare config
-
-
-def prepare(options):
+def prepare_config(options):
     with open(POS_CONFIG) as file:
-        contents = file.read()
+        config_str = file.read()
     for key, value in options.items():
         pattern = f"local {key} = [a-z0-9]+;"
         repl = f"local {key} = {value};"
-        contents = re.sub(pattern, repl, contents)
-    return contents
+        config_str = re.sub(pattern, repl, config_str)
+    return config_str
 
 
 # Train
 
 
 def train(options):
-    config_str = prepare(options)
+    config_str = prepare_config(options)
     config = json.loads(_jsonnet.evaluate_snippet("snippet", config_str))
     # The override flag in allennlp was finicky so I used a temporary file hack
     with open(TMP_FILENAME, "w") as file:
         json.dump(config, file, indent=2)
-    serialization_dir = make_dirname(options)
+    serialization_dir = make_serialization_dirname(options)
     cmd = TRAIN_CMD.format(directory=serialization_dir, config=TMP_FILENAME)
     os.system(cmd)
 
 
-def train_ensemble(options=None):
+def train_ensemble(options):
     for k in range(K):
-        train(k, options)
-
-
-# Evaluate
-
-
-def score(k):
-    filename = os.path.join(POS_MODELS, str(k), "metrics.json")
-    with open(filename) as file:
-        metrics = json.load(file)
-        accuracy = round(metrics["validation_accuracy"], 4)
-    return accuracy
-
-
-def score_ensemble():
-    accuracies = [score(k) for k in range(K)]
-    mean = round(np.mean(accuracies), 3)
-    std = round(np.std(accuracies), 3)
-    print(mean, std)
-    print(accuracies)
+        options["FOLD"] = k
+        train(options)
 
 
 # Predict
 
 
-def load_model(k):
-    filename = os.path.join(POS_MODELS, str(k), "model.tar.gz")
+def load_model(options):
+    serialization_dir = make_serialization_dirname(options)
+    filename = os.path.join(serialization_dir, "model.tar.gz")
     return Predictor.from_path(filename, predictor_name="sentence-tagger")
 
 
-def predict(k, text):
-    model = load_model(k)
+def predict(options, text):
+    model = load_model(options)
     preprocessed_text = preprocess(text)
     result = model.predict(preprocessed_text)
     predicted_tags = result["tags"]
@@ -95,19 +73,19 @@ def predict(k, text):
     return df
 
 
-def predict_ensemble(text):
-    df = pd.DataFrame()
-    for k in range(K):
-        prediction = predict(k, text)
-        df[k] = prediction["tag"]
-    mode = df.mode(axis=1)[0]
-    tokens = tokenize_words(text)
-    return pd.DataFrame({"form": tokens, "tag": mode})
+# def predict_ensemble(text):
+#     df = pd.DataFrame()
+#     for k in range(K):
+#         prediction = predict(k, text)
+#         df[k] = prediction["tag"]
+#     mode = df.mode(axis=1)[0]
+#     tokens = tokenize_words(text)
+#     return pd.DataFrame({"form": tokens, "tag": mode})
 
 
 if __name__ == "__main__":
     options = {
-        "TOKEN_EMBEDDING_DIM": 200,
+        "TOKEN_EMBEDDING_DIM": 25,
         "CHAR_EMBEDDING_DIM": 10,
         "HIDDEN_SIZE": 100,
         "BATCH_SIZE": 32,
