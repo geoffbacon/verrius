@@ -115,6 +115,6 @@ if __name__ == "__main__":
         "USE_PRETRAINED_CHARS": "true",
         "NUM_EPOCHS": 3,
         "USE_GPU": "false",
-        "FOLD": 0
+        "FOLD": 0,
     }
     train(options)
