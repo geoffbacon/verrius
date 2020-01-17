@@ -47,7 +47,7 @@ corpus:
 
 # train character and word embeddings
 embeddings:
-	nohup python -u src/embeddings.py > logs/embeddings.out &
+	nohup python -u src/embeddings.py > /dev/null &
 
 # delete all trained models
 refresh:

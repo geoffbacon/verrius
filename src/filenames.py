@@ -1,6 +1,8 @@
 """File name constants used across different modules."""
 
-ROOT = "/Volumes/GoogleDrive/My Drive/research/evalatin/verrius"  # for Jupyter notebooks
+ROOT = (
+    "/Volumes/GoogleDrive/My Drive/research/evalatin/verrius"  # for Jupyter notebooks
+)
 RAW_EVALATIN_DATA = "data/evalatin/raw"
 PROCESSED_POS_DATA = "data/evalatin/processed/pos"
 GRAPHEME_PROFILE = "src/profile.txt"

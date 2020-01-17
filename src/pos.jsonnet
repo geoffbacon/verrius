@@ -6,12 +6,16 @@ local CHAR_EMBEDDING_DIM = 10;
 local HIDDEN_SIZE = 100;
 local BATCH_SIZE = 32;
 local USE_PRETRAINED_WORDS = false;
-local PRETRAINED_WORDS = "models/embeddings/words/vectors-" + TOKEN_EMBEDDING_DIM + ".txt";
 local USE_PRETRAINED_CHARS = false;
-local PRETRAINED_CHARS = "models/embeddings/chars/vectors-" + CHAR_EMBEDDING_DIM + ".txt";
-local FOLD = 0;
 local NUM_EPOCHS = 10;
+
+# Other options
 local USE_GPU = false;
+local FOLD = 0;
+local PRETRAINED_WORDS = "models/embeddings/words/vectors-" + TOKEN_EMBEDDING_DIM + ".txt";
+local PRETRAINED_CHARS = "models/embeddings/chars/vectors-" + CHAR_EMBEDDING_DIM + ".txt";
+local TRAIN_DATA_PATH = "data/evalatin/processed/pos/" + FOLD + "-train.txt";
+local VALID_DATA_PATH ="data/evalatin/processed/pos/" + FOLD + "-valid.txt";
 
 local CHARACTER_LSTM = {
     "type": "lstm",
@@ -46,8 +50,8 @@ local BIDIRECTIONAL_LSTM = {
             },
         },
     },
-    "train_data_path": "data/evalatin/processed/pos/" + FOLD + "-train.txt",
-    "validation_data_path": "data/evalatin/processed/pos/" + FOLD + "-valid.txt",
+    "train_data_path": TRAIN_DATA_PATH,
+    "validation_data_path": VALID_DATA_PATH,
     "iterator": {
         "type": "basic",
         "batch_size": BATCH_SIZE
