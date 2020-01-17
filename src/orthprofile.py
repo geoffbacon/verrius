@@ -1,4 +1,4 @@
-"""Create orthography profile for grapheme tokenization."""
+"""Create an orthography profile for grapheme tokenization."""
 
 from collections import OrderedDict
 
@@ -8,7 +8,7 @@ from filenames import GRAPHEME_PROFILE
 from preprocessing import clean
 from utils import read
 
-# Read in all data into a single pyconll CoNLL structure
+# Read in all EvaLatin training data into a single pyconll CoNLL structure
 conll = read()
 
 # Collect all the word forms

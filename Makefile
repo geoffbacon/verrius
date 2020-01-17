@@ -20,23 +20,22 @@ clean:
 	@find . -name '__pycache__' -exec rm -rf {} +
 	@find . -name '.ipynb_checkpoints' -exec rm -rf {} +
 
+# format according to style guide
+format:
+	black $(SRC)
+	isort -rc $(SRC)
+
 # check style
 lint: format
 	pylint --exit-zero --jobs=0 --output-format=colorized $(SRC)
 	pycodestyle --show-source $(SRC)
 	pydocstyle $(SRC)
 
-# format according to style guide
-format:
-	black $(SRC)
-	isort -rc $(SRC)
-
 # Data-related targets
 
 # create orthography profile
 profile:
-	python src/oprofile.py
-
+	python src/orthprofile.py
 
 # preprocess data
 preprocess:
