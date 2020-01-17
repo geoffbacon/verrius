@@ -4,6 +4,7 @@ import os
 import re
 import unicodedata
 
+import fire
 from segments import Tokenizer
 from sklearn.model_selection import KFold
 
@@ -151,6 +152,5 @@ def prepare_pos(num_splits=K):
         filename = os.path.join(PROCESSED_POS_DATA, f"{k}-valid.txt")
         write(valid, filename)
 
-
 if __name__ == "__main__":
-    prepare_pos(K)
+    fire.Fire()

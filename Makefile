@@ -39,7 +39,7 @@ profile:
 
 # preprocess data
 preprocess:
-	python src/preprocessing.py
+	python src/preprocessing.py prepare_pos
 
 # create unlabelled corpus
 corpus:
