@@ -8,8 +8,7 @@ from gensim.models import FastText
 from gensim.models.callbacks import CallbackAny2Vec
 from tqdm import tqdm
 
-from filenames import (CHAR_VECTORS_FILENAME, EXTERNAL_CORPUS_FILENAME,
-                       LOG_DIR, WORD_VECTORS_FILENAME)
+from filenames import EXTERNAL_CORPUS_FILENAME, LOG_DIR, VECTORS_FILENAME
 
 # silence gensim's logging
 logging.getLogger("gensim").setLevel(logging.ERROR)
@@ -25,10 +24,11 @@ class Corpus:
     def __iter__(self):
         with open(EXTERNAL_CORPUS_FILENAME) as file:
             for line in file:
+                words = line.strip().split()
                 if self.unit == "words":
-                    yield line.strip().split()
+                    yield words
                 elif self.unit == "chars":
-                    for word in line.strip().split():
+                    for word in words:
                         yield list(word)
 
     def count(self):
@@ -68,13 +68,13 @@ class Callback(CallbackAny2Vec):
 
 # pylint: disable=C0330
 def train(
-    unit="words",  # word or char embeddings
+    unit="words",  # character or word embeddings
     size=300,  # size of the embeddings
-    window=4,  # context window
-    epochs=10,  # number of iterations over the corpus
-    min_ngram=3,  # minimum length of n-grams
-    max_ngram=6,  # maximum length of n-grams
-    min_count=3,  # minimum token frequency
+    window=3,  # context window
+    epochs=2,  # number of iterations over the corpus
+    min_ngram=2,  # minimum length of n-grams
+    max_ngram=4,  # maximum length of n-grams
+    min_count=2,  # minimum token frequency
     skipgram=1,  # use skipgram over CBOW
     ngrams=1,  # use fasttext over word2vec
     workers=4,  # number of threads
@@ -84,8 +84,8 @@ def train(
     Hyperparameters can be specified either at the command line.
     
     """
-    if unit == "chars":
-        assert ngrams == 0, "Can't use fasttext on characters"
+    if unit == "chars":  # force word2vec for character embeddings
+        ngrams = 0
     corpus = Corpus(unit=unit)
     num_lines, num_words = corpus.count()
     model = FastText(
@@ -107,10 +107,7 @@ def train(
         epochs=epochs,
         callbacks=[callback],
     )
-    if unit == "words":
-        filename = WORD_VECTORS_FILENAME.format(size)
-    elif unit == "chars":
-        filename = CHAR_VECTORS_FILENAME.format(size)
+    filename = VECTORS_FILENAME.format(unit=unit, size=size)
     model.wv.save_word2vec_format(filename, binary=False)
     # Remove header line
     with open(filename, "r") as file:
@@ -119,6 +116,8 @@ def train(
         file.write("".join(lines[1:]))
 
 
-# if __name__ == "__main__":
-#     for size in [10, 25, 50, 100, 200, 300]:
-#         train(size=size)
+if __name__ == "__main__":
+    for size in [10, 25]:
+        train(unit="words", size=size)
+    for size in [5, 10]:
+        train(unit="chars", size=size, ngrams=0)
