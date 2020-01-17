@@ -71,7 +71,7 @@ def train(
     unit="words",  # character or word embeddings
     size=300,  # size of the embeddings
     window=3,  # context window
-    epochs=2,  # number of iterations over the corpus
+    epochs=10,  # number of iterations over the corpus
     min_ngram=2,  # minimum length of n-grams
     max_ngram=4,  # maximum length of n-grams
     min_count=2,  # minimum token frequency
