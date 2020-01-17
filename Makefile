@@ -45,7 +45,7 @@ preprocess:
 corpus:
 	python src/corpus.py
 
-# train word embeddings
+# train character and word embeddings
 embeddings:
 	nohup python -u src/embeddings.py > logs/embeddings.out &
 

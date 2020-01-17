@@ -1,16 +1,15 @@
-"""Train embeddings."""
+"""Train character and word embeddings."""
+
 import logging
 import os
 import warnings
 
 from gensim.models import FastText
 from gensim.models.callbacks import CallbackAny2Vec
-from gensim.models.keyedvectors import FastTextKeyedVectors
 from tqdm import tqdm
 
 from filenames import (CHAR_VECTORS_FILENAME, EXTERNAL_CORPUS_FILENAME,
                        LOG_DIR, WORD_VECTORS_FILENAME)
-from preprocessing import WORD_SEPARATOR, WORD_TAG_DELIMITER
 
 # silence gensim's logging
 logging.getLogger("gensim").setLevel(logging.ERROR)
@@ -18,7 +17,7 @@ warnings.simplefilter(action="ignore", category=UserWarning)
 
 
 class Corpus:
-    """Provide access to external unlabelled data."""
+    """Provide access to external unlabelled data as either stream of characters or words."""
 
     def __init__(self, unit="words"):
         self.unit = unit
