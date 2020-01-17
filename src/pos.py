@@ -18,6 +18,7 @@ TMP_FILENAME = "tmp.jsonnet"
 TRAIN_CMD = "allennlp train -s {directory} -f {config} && rm {config}"
 GPU_AVAILABLE = str(torch.cuda.is_available()).lower()
 
+
 def make_serialization_dirname(options):
     return POS_MODELS.format(**options)
 
