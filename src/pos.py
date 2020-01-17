@@ -8,8 +8,8 @@ from itertools import product
 import _jsonnet
 import numpy as np
 import pandas as pd
-from allennlp.predictors import Predictor
 import torch
+from allennlp.predictors import Predictor
 
 from filenames import POS_CONFIG, POS_MODELS, PROCESSED_POS_DATA
 from preprocessing import K, preprocess, tokenize_words
