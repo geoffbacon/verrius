@@ -35,7 +35,7 @@ format:
 
 # create orthography profile
 profile:
-	python src/profile.py
+	python src/oprofile.py
 
 
 # preprocess data

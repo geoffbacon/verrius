@@ -5,8 +5,10 @@ local TOKEN_EMBEDDING_DIM = 100;
 local CHAR_EMBEDDING_DIM = 10;
 local HIDDEN_SIZE = 100;
 local BATCH_SIZE = 32;
-local USE_PRETRAINED = false;
-local PRETRAINED_FILE = "models/embeddings/vectors-" + TOKEN_EMBEDDING_DIM + ".txt";
+local USE_PRETRAINED_WORDS = false;
+local PRETRAINED_WORDS = "models/embeddings/words/vectors-" + TOKEN_EMBEDDING_DIM + ".txt";
+local USE_PRETRAINED_CHARS = false;
+local PRETRAINED_CHARS = "models/embeddings/chars/vectors-" + CHAR_EMBEDDING_DIM + ".txt";
 local FOLD = 0;
 local NUM_EPOCHS = 10;
 local USE_GPU = false;
@@ -69,13 +71,14 @@ local BIDIRECTIONAL_LSTM = {
                     "type": "embedding",
                     "embedding_dim": TOKEN_EMBEDDING_DIM,
                     "trainable": true,
-                    "pretrained_file": if USE_PRETRAINED then PRETRAINED_FILE else ""
+                    "pretrained_file": if USE_PRETRAINED_WORDS then PRETRAINED_WORDS else ""
                 },
                 "token_characters": {
                     "type": "character_encoding",
                     "embedding": {
                         "embedding_dim": CHAR_EMBEDDING_DIM,
-                        "trainable": true
+                        "trainable": true,
+                        "pretrained_file": if USE_PRETRAINED_CHARS then PRETRAINED_CHARS else ""
                     },
                     "encoder": CHARACTER_LSTM,
                     "dropout": 0.1

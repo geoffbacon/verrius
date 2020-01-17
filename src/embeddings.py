@@ -3,13 +3,12 @@ import logging
 import os
 import warnings
 
-import numpy as np
 from gensim.models import FastText
 from gensim.models.callbacks import CallbackAny2Vec
 from gensim.models.keyedvectors import FastTextKeyedVectors
 from tqdm import tqdm
 
-from filenames import EXTERNAL_CORPUS_FILENAME, LOG_DIR, VECTORS_FILENAME
+from filenames import EXTERNAL_CORPUS_FILENAME, LOG_DIR, WORD_VECTORS_FILENAME, CHAR_VECTORS_FILENAME
 from preprocessing import WORD_SEPARATOR, WORD_TAG_DELIMITER
 
 # silence gensim's logging
@@ -20,10 +19,17 @@ warnings.simplefilter(action="ignore", category=UserWarning)
 class Corpus:
     """Provide access to external unlabelled data."""
 
+    def __init__(self, unit="words"):
+        self.unit = unit
+
     def __iter__(self):
         with open(EXTERNAL_CORPUS_FILENAME) as file:
             for line in file:
-                yield line.strip().split()
+                if self.unit == "words":
+                    yield line.strip().split()
+                elif self.unit == "chars":
+                    for word in line.strip().split():
+                        yield list(word)
 
     def count(self):
         """Return the number of lines and words in the corpus."""
@@ -62,6 +68,7 @@ class Callback(CallbackAny2Vec):
 
 # pylint: disable=C0330
 def train(
+    unit="words",  # word or char embeddings
     size=300,  # size of the embeddings
     window=4,  # context window
     epochs=10,  # number of iterations over the corpus
@@ -77,7 +84,9 @@ def train(
     Hyperparameters can be specified either at the command line.
     
     """
-    corpus = Corpus()
+    if unit == "chars":
+        assert ngrams == 0, "Can't use fasttext on characters"
+    corpus = Corpus(unit=unit)
     num_lines, num_words = corpus.count()
     model = FastText(
         size=size,
@@ -98,7 +107,10 @@ def train(
         epochs=epochs,
         callbacks=[callback],
     )
-    filename = VECTORS_FILENAME.format(size)
+    if unit == "words":
+        filename = WORD_VECTORS_FILENAME.format(size)
+    elif unit == "chars":
+        filename = CHAR_VECTORS_FILENAME.format(size)
     model.wv.save_word2vec_format(filename, binary=False)
     # Remove header line
     with open(filename, "r") as file:
@@ -107,6 +119,6 @@ def train(
         file.write("".join(lines[1:]))
 
 
-if __name__ == "__main__":
-    for size in [10, 25, 50, 100, 200, 300]:
-        train(size=size)
+# if __name__ == "__main__":
+#     for size in [10, 25, 50, 100, 200, 300]:
+#         train(size=size)

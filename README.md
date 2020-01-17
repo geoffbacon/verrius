@@ -3,7 +3,6 @@
 Part-of-speech tagger and lemmatizer for Latin.
 
 ## To do
-- Add to Makefile
 - POS tagging
     - Pre-trained embeddings
         - Train different sizes *

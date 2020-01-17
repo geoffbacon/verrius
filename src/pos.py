@@ -9,8 +9,7 @@ import numpy as np
 import pandas as pd
 from allennlp.predictors import Predictor
 
-from filenames import (POS_CONFIG, POS_MODELS, PROCESSED_POS_DATA,
-                       VECTORS_FILENAME)
+from filenames import POS_CONFIG, POS_MODELS, PROCESSED_POS_DATA
 from preprocessing import K, preprocess, tokenize_words
 
 TMP_FILENAME = "tmp.jsonnet"
@@ -45,7 +44,7 @@ def train(options):
     # The override flag in allennlp was finicky so I used a temporary file hack
     with open(TMP_FILENAME, "w") as file:
         json.dump(config, file, indent=2)
-    serialization_dir = make_dirname(contents)
+    serialization_dir = make_dirname(options)
     cmd = TRAIN_CMD.format(directory=serialization_dir, config=TMP_FILENAME)
     os.system(cmd)
 
@@ -106,15 +105,16 @@ def predict_ensemble(text):
     return pd.DataFrame({"form": tokens, "tag": mode})
 
 
-# if __name__ == "__main__":
-#     options = {
-#         "TOKEN_EMBEDDING_DIM": 100,
-#         "CHAR_EMBEDDING_DIM": 10,
-#         "HIDDEN_SIZE": 100,
-#         "BATCH_SIZE": 32,
-#         "USE_PRETRAINED": "true",
-#         "NUM_EPOCHS": 3,
-#         "USE_GPU": "false",
-#         "FOLD": 0
-#     }
-#     train(options)
+if __name__ == "__main__":
+    options = {
+        "TOKEN_EMBEDDING_DIM": 200,
+        "CHAR_EMBEDDING_DIM": 10,
+        "HIDDEN_SIZE": 100,
+        "BATCH_SIZE": 32,
+        "USE_PRETRAINED_WORDS": "true",
+        "USE_PRETRAINED_CHARS": "true",
+        "NUM_EPOCHS": 3,
+        "USE_GPU": "false",
+        "FOLD": 0
+    }
+    train(options)
