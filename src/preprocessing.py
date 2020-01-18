@@ -149,14 +149,18 @@ def prepare_pos(num_splits=K):
 
     # Clean, tokenize and prepare each sentence
     data = []
+    raw_data = []
     for sentence in conll:
         line = []
+        raw_line = []
         for token in sentence:
             cleaned_token = clean_and_tokenize(token.form)
             pos = token.upos
             instance = cleaned_token + WORD_TAG_DELIMITER + pos
             line.append(instance)
+            raw_line.append(token.form + WORD_TAG_DELIMITER + pos)
         data.append(WORD_SEPARATOR.join(line))
+        raw_data.append(WORD_SEPARATOR.join(raw_line))
 
     cv = KFold(num_splits, shuffle=True, random_state=SEED)
     for k, (train_idx, valid_idx) in enumerate(cv.split(data)):
@@ -166,6 +170,9 @@ def prepare_pos(num_splits=K):
         write(train, filename)
         filename = os.path.join(PROCESSED_POS_DATA, f"{k}-valid.txt")
         write(valid, filename)
+        raw_valid = [raw_data[i] for i in valid_idx]
+        filename = os.path.join(PROCESSED_POS_DATA, f"{k}-valid-unprocessed.txt")
+        write(raw_valid, filename)
 
 
 if __name__ == "__main__":
