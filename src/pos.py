@@ -8,11 +8,13 @@ from itertools import product
 import _jsonnet
 import numpy as np
 import pandas as pd
+import pyconll
 import torch
 from allennlp.predictors import Predictor
 
 from filenames import POS_CONFIG, POS_MODELS, PROCESSED_POS_DATA
-from preprocessing import K, preprocess, tokenize_words
+from preprocessing import (K, preprocess, preprocess_like_evalatin,
+                           tokenize_words)
 
 TMP_FILENAME = "tmp.jsonnet"
 TRAIN_CMD = "allennlp train -s {directory} -f {config} && rm {config}"
@@ -47,24 +49,16 @@ def train(options):
     os.system(cmd)
 
 
-def train_ensemble(options):
-    for k in range(K):
-        options["FOLD"] = k
-        train(options)
-
-
 # Predict
 
 
-def load_model(options):
-    serialization_dir = make_serialization_dirname(options)
+def load_model(serialization_dir):
     filename = os.path.join(serialization_dir, "model.tar.gz")
     return Predictor.from_path(filename, predictor_name="sentence-tagger")
 
 
-def predict(options, text):
-    model = load_model(options)
-    preprocessed_text = preprocess(text)
+def predict_from_text(model, text):
+    preprocessed_text = preprocess(preprocess_like_evalatin(text))
     result = model.predict(preprocessed_text)
     predicted_tags = result["tags"]
     labels = model._model.vocab.get_token_to_index_vocabulary("labels")
@@ -74,17 +68,6 @@ def predict(options, text):
     probs = pd.DataFrame(result["class_probabilities"], columns=labels)
     df = pd.merge(df, probs, left_index=True, right_index=True)
     return df
-
-
-# def predict_ensemble(text):
-#     df = pd.DataFrame()
-#     for k in range(K):
-#         prediction = predict(k, text)
-#         df[k] = prediction["tag"]
-#     mode = df.mode(axis=1)[0]
-#     tokens = tokenize_words(text)
-#     return pd.DataFrame({"form": tokens, "tag": mode})
-
 
 if __name__ == "__main__":
     USE_PRETRAINED = ["true"]
@@ -112,4 +95,4 @@ if __name__ == "__main__":
             "NUM_EPOCHS": 10,
             "USE_GPU": GPU_AVAILABLE,
         }
-        train(options)
+        # train(options)

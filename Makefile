@@ -59,4 +59,4 @@ refresh:
 	@mkdir models models/pos models/embeddings
 	@touch models/pos/.gitkeep models/embeddings.gitkeep
 
-.PHONY: requirements install clean lint format profile preprocess corpus embeddings refresh
+.PHONY: requirements install clean lint format profile preprocess corpus embeddings pos refresh

@@ -6,8 +6,10 @@ Part-of-speech tagger and lemmatizer for Latin.
 - POS tagging
     - Hyperparameter optimization *
     - Postprocessing
-    - Evaluation (output, script and analysis)
-    - Error analysis
+    - Evaluation
+        - Results
+        - Errors
+    - Output and evaluation script
     - Facilitate engagement
     - Lint and clean up
     - Preprocessing
