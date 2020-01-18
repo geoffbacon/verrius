@@ -18,4 +18,4 @@ Part-of-speech tagger and lemmatizer for Latin.
 - Data augmentation methods
 
 ## Current score
-0.901 0.005
+0.954
