@@ -11,6 +11,7 @@ else:
 )
 RAW_EVALATIN_DATA = "data/evalatin/raw"
 PROCESSED_POS_DATA = "data/evalatin/processed/pos"
+PROCESSED_LEMMA_DATA = "data/evalatin/processed/lemma"
 GRAPHEME_PROFILE = "src/profile.txt"
 EXTERNAL_CORPUS_FILENAME = "data/external/corpus.txt"
 VECTORS_FILENAME = "models/embeddings/{unit}/vectors-{size}.txt"

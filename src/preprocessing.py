@@ -8,8 +8,9 @@ from string import punctuation
 import fire
 from segments import Tokenizer
 from sklearn.model_selection import KFold
+import pandas as pd
 
-from filenames import GRAPHEME_PROFILE, PROCESSED_POS_DATA
+from filenames import GRAPHEME_PROFILE, PROCESSED_POS_DATA, PROCESSED_LEMMA_DATA
 from utils import SEED, read, write
 
 PUNCTUATION = punctuation.replace(".", "")
@@ -90,14 +91,27 @@ def clean(word):
     word = word.lower()
     return word
 
+def clean_for_lemmatization(word):
+    word = remove_other_chars(word)
+    word = replace_greek_word(word)
+    word = replace_salus(word)
+    word = replace_lacuna(word)
+    word = replace_full_stop(word)
+    word = replace_j(word)
+    word = word.lower()
+    return word
+
 
 # Tokenize
 
 tokenize_graphemes = Tokenizer(GRAPHEME_PROFILE)
 
 
-def clean_and_tokenize(word):
-    word = clean(word)
+def clean_and_tokenize(word, for_lemmatization=False):
+    if for_lemmatization:
+        word = clean_for_lemmatization(word)
+    else:
+        word = clean(word)
     graphemes = tokenize_graphemes(
         word, segment_separator=GRAPHEME_SEPARATOR, column="mapping"
     )
@@ -129,6 +143,13 @@ def preprocess(text):
     """Preprocess unlabelled text."""
     words = tokenize_words(text)
     words = [clean_and_tokenize(word) for word in words]
+    return WORD_SEPARATOR.join(words)
+
+
+def preprocess_for_lemmatization(text):
+    """Preprocess unlabelled text for lemmatization."""
+    words = tokenize_words(text)
+    words = [clean_and_tokenize(word, True) for word in words]
     return WORD_SEPARATOR.join(words)
 
 
@@ -175,5 +196,36 @@ def prepare_pos(num_splits=K):
         write(raw_valid, filename)
 
 
-if __name__ == "__main__":
-    fire.Fire()
+# Prepare lemmatization data
+
+def prepare_lemmatization(num_splits=K):
+    # Read in all data into a single pyconll CoNLL structure
+    conll = read()
+
+    # Clean, tokenize and prepare each sentence
+    data = []
+    for sentence in conll:
+        line = []
+        for token in sentence:
+            cleaned_token = clean_and_tokenize(token.form, True)
+            instance = {"form": cleaned_token, "pos": token.upos, "lemma": token.lemma}
+            line.append(instance)
+        data.append(line)
+    cv = KFold(num_splits, shuffle=True, random_state=SEED)
+    for k, (train_idx, valid_idx) in enumerate(cv.split(data)):
+        train = [data[i] for i in train_idx]
+        valid = [data[i] for i in valid_idx]
+        train = pd.DataFrame([item for sublist in train for item in sublist])
+        valid = pd.DataFrame([item for sublist in valid for item in sublist])
+        filename = os.path.join(PROCESSED_LEMMA_DATA, f"{k}-train.csv")
+        train.to_csv(filename, index=False)
+        filename = os.path.join(PROCESSED_LEMMA_DATA, f"{k}-valid.csv")
+        valid.to_csv(filename, index=False)
+
+    
+
+
+
+
+# if __name__ == "__main__":
+#     fire.Fire()
