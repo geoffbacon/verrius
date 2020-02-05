@@ -21,5 +21,8 @@ Part-of-speech tagger and lemmatizer for Latin.
 - External labelled data
 - Data augmentation methods
 
-## Current score
+## Current POS score
 0.957
+
+## Current lemmatization score
+0.905

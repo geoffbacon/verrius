@@ -211,7 +211,7 @@ def prepare_lemmatization(num_splits=K):
         line = []
         for token in sentence:
             cleaned_token = clean_and_tokenize(token.form, True)
-            instance = {"form": cleaned_token, "pos": token.upos, "lemma": token.lemma}
+            instance = {"form": cleaned_token, "pos": token.upos, "lemma": token.lemma, "raw": token.form}
             line.append(instance)
         data.append(line)
     cv = KFold(num_splits, shuffle=True, random_state=SEED)
