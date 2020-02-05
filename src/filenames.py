@@ -6,9 +6,7 @@ remote = sys.platform == "linux"
 if remote:
     ROOT = "/home/bacon/verrius"
 else:
-    ROOT = (
-    "/Volumes/GoogleDrive/My Drive/research/evalatin/verrius"  # for Jupyter notebooks
-)
+    ROOT = "/Volumes/GoogleDrive/My Drive/research/evalatin/verrius"  # for Jupyter notebooks
 RAW_EVALATIN_DATA = "data/evalatin/raw"
 PROCESSED_POS_DATA = "data/evalatin/processed/pos"
 PROCESSED_LEMMA_DATA = "data/evalatin/processed/lemma"

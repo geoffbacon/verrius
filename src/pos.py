@@ -69,6 +69,7 @@ def predict_from_text(model, text):
     df = pd.merge(df, probs, left_index=True, right_index=True)
     return df
 
+
 if __name__ == "__main__":
     USE_PRETRAINED = ["true"]
     BATCH_SIZES = [8, 16]

@@ -6,11 +6,12 @@ import unicodedata
 from string import punctuation
 
 import fire
+import pandas as pd
 from segments import Tokenizer
 from sklearn.model_selection import KFold
-import pandas as pd
 
-from filenames import GRAPHEME_PROFILE, PROCESSED_POS_DATA, PROCESSED_LEMMA_DATA
+from filenames import (GRAPHEME_PROFILE, PROCESSED_LEMMA_DATA,
+                       PROCESSED_POS_DATA)
 from utils import SEED, read, write
 
 PUNCTUATION = punctuation.replace(".", "")
@@ -90,6 +91,7 @@ def clean(word):
     word = replace_j(word)
     word = word.lower()
     return word
+
 
 def clean_for_lemmatization(word):
     word = remove_other_chars(word)
@@ -198,6 +200,7 @@ def prepare_pos(num_splits=K):
 
 # Prepare lemmatization data
 
+
 def prepare_lemmatization(num_splits=K):
     # Read in all data into a single pyconll CoNLL structure
     conll = read()
@@ -221,10 +224,6 @@ def prepare_lemmatization(num_splits=K):
         train.to_csv(filename, index=False)
         filename = os.path.join(PROCESSED_LEMMA_DATA, f"{k}-valid.csv")
         valid.to_csv(filename, index=False)
-
-    
-
-
 
 
 # if __name__ == "__main__":
